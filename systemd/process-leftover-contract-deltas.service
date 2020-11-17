@@ -1,0 +1,11 @@
+[Unit]
+Description=Ubuntu Advantage process leftover contract deltas
+After=cloud-final.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/lib/ubuntu-advantage/upgrade_lts_contract.py
+TimeoutSec=0
+
+[Install]
+WantedBy=multi-user.target

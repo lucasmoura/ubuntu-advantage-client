@@ -56,6 +56,13 @@ def _get_data_files():
         data_files.append(("/etc/init", glob.glob("upstart/*")))
     else:
         data_files.append(("/lib/systemd/system", glob.glob("systemd/*")))
+
+    data_files.append(
+        (
+            "/lib/systemd/system",
+            ["systemd/process-leftover-contract-deltas.service"],
+        )
+    )
     return data_files
 
 
