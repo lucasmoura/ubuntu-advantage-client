@@ -89,6 +89,8 @@ Feature: Command behaviour when attaching a machine to an Ubuntu Advantage
         """
         SERVICE       ENTITLED  STATUS    DESCRIPTION
         esm-infra    +yes      +enabled  +UA Infra: Extended Security Maintenance \(ESM\)
+        fips         +yes      +n/a      +NIST-certified FIPS modules
+        fips-updates +yes      +n/a      +Uncertified security updates to FIPS modules
         livepatch    +yes      +<lp_status>  +<lp_desc>
         """
         And stderr matches regexp:
@@ -121,6 +123,8 @@ Feature: Command behaviour when attaching a machine to an Ubuntu Advantage
         """
         SERVICE       ENTITLED  STATUS    DESCRIPTION
         esm-infra    +yes      +enabled  +UA Infra: Extended Security Maintenance \(ESM\)
+        fips         +yes      +n/a      +NIST-certified FIPS modules
+        fips-updates +yes      +n/a      +Uncertified security updates to FIPS modules
         livepatch    +yes      +<lp_status>  +<lp_desc>
         """
         And stderr matches regexp:
