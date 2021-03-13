@@ -149,14 +149,17 @@ Feature: Command behaviour when unattached
             Usage: "ua fix CVE-yyyy-nnnn" or "ua fix USN-nnnn"
             """
         When I run `apt install -y libawl-php` with sudo
-        And I run `ua fix USN-4539-1` as non-root
+        And I verify that running `ua fix USN-4539-1` `as non-root` exits `1`
         Then stdout matches regexp:
             """
             USN-4539-1: AWL vulnerability
             https://ubuntu.com/security/notices/USN-4539-1
-            1 affected package is installed: awl
-            \(1/1\) awl:
-            <usn_resolution>
+            Related CVEs: CVE-2020-11728.
+            """
+        Then stderr matches regexp:
+            """
+            Error: USN-4539-1 metadata defines no fixed package versions.
+            .*✘.* USN-4539-1 is not resolved.
             """
         When I run `ua fix CVE-2020-28196` as non-root
         Then stdout matches regexp:
@@ -171,23 +174,25 @@ Feature: Command behaviour when unattached
             """
 
         Examples: ubuntu release details
-           | release | usn_resolution |
-           | xenial  | Ubuntu security engineers are investigating this issue. |
-           | bionic  | Ubuntu security engineers are investigating this issue. |
-           | focal   | A fix is available in Ubuntu standard updates.\nThe update is already installed.\n.*✔.* USN-4539-1 is resolved. |
+           | release |
+           | xenial  |
+           | bionic  |
+           | focal   |
 
     @series.xenial
     Scenario Outline: Fix command on an unattached machine
         Given a `<release>` machine with ubuntu-advantage-tools installed
         When I run `apt install -y libawl-php` with sudo
-        And I run `ua fix USN-4539-1` as non-root
+        And I verify that running `ua fix USN-4539-1` `as non-root` exits `1`
         Then stdout matches regexp:
             """
             USN-4539-1: AWL vulnerability
             https://ubuntu.com/security/notices/USN-4539-1
-            1 affected package is installed: awl
-            \(1/1\) awl:
-            <usn_resolution>
+            Related CVEs: CVE-2020-11728.
+            """
+        Then stderr matches regexp:
+            """
+            Error: USN-4539-1 metadata defines no fixed package versions.
             .*✘.* USN-4539-1 is not resolved.
             """
         When I run `ua fix CVE-2020-28196` as non-root
@@ -231,20 +236,25 @@ Feature: Command behaviour when unattached
             """
 
         Examples: ubuntu release details
-           | release | usn_resolution |
-           | xenial  | Ubuntu security engineers are investigating this issue. |
+           | release |
+           | xenial  |
 
 
     @series.trusty
     Scenario Outline: Fix command on an unattached machine
         Given a `<release>` machine with ubuntu-advantage-tools installed
-        When I run `ua fix USN-4539-1` as non-root
+        When I verify that running `ua fix USN-4539-1` `as non-root` exits `1`
         Then stdout matches regexp:
             """
             USN-4539-1: AWL vulnerability
             https://ubuntu.com/security/notices/USN-4539-1
             No affected packages are installed.
             .*✔.* USN-4539-1 does not affect your system.
+            """
+        Then stderr matches regexp:
+            """
+            Error: USN-4539-1 metadata defines no fixed package versions.
+            .*✘.* USN-4539-1 is not resolved.
             """
         When I run `ua fix CVE-2020-15180` as non-root
         Then stdout matches regexp:
