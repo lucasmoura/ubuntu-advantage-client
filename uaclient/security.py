@@ -436,6 +436,14 @@ def merge_usn_released_binary_package_versions(
     for usn in usns:
         # Aggregate USN.release_package binary versions into usn_pkg_versions
         for src_pkg, binary_pkg_versions in usn.release_packages.items():
+            # Sometimes, the set of binary packages will also include a source
+            # package. In that situation, we want to name the source pkg
+            # if the exact name of the package. This will allow us to treat
+            # the source package as any other binary package
+            if "source" in binary_pkg_versions:
+                binary_pkg_versions[src_pkg] = binary_pkg_versions.pop(
+                    "source"
+                )
             if src_pkg not in usn_pkg_versions:
                 usn_pkg_versions[src_pkg] = binary_pkg_versions
             else:
@@ -446,8 +454,7 @@ def merge_usn_released_binary_package_versions(
                     if binary_pkg not in usn_src_pkg:
                         usn_src_pkg[binary_pkg] = binary_pkg_md
                     else:
-                        binary_pkg_md = usn_src_pkg[binary_pkg]
-                        prev_version = binary_pkg_md["version"]
+                        prev_version = usn_src_pkg[binary_pkg]["version"]
                         current_version = binary_pkg_md["version"]
                         if not version_cmp_le(current_version, prev_version):
                             # binary_version is greater than prev_version
@@ -499,7 +506,7 @@ def fix_security_issue_id(cfg: UAConfig, issue_id: str) -> None:
         related_cves = set(itertools.chain(*[u.cve_ids for u in usns]))
         if not related_cves:
             raise exceptions.SecurityAPIMetadataError(
-                "{} metadata defines no related CVEs".format(issue_id),
+                "{} metadata defines no related CVEs.".format(issue_id),
                 issue_id=issue_id,
             )
         print("Related CVEs: {}.".format(", ".join(usn.cve_ids)))
