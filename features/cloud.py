@@ -46,6 +46,8 @@ class Cloud:
         self._api = None
         self.key_name = pycloudlib.util.get_timestamped_tag(self.tag)
         self.timestamp_suffix = timestamp_suffix
+        self.pub_key_path = None  # type: Optional[str]
+        self.priv_key_path = None  # type: Optional[str]
 
         missing_env_vars = self.missing_env_vars()
         if missing_env_vars:
@@ -238,12 +240,23 @@ class Cloud:
         with open(priv_key_path, "w") as f:
             f.write(priv_key)
 
+        self.pub_key_path = pub_key_path
+        self.priv_key_path = priv_key_path
+
         os.chmod(pub_key_path, 0o600)
         os.chmod(priv_key_path, 0o600)
 
         self.api.use_key(
             public_key_path=pub_key_path, private_key_path=priv_key_path
         )
+
+    def delete_ssh_keys(self):
+        """Delete ssh keys used by the cloud manager."""
+        if self.pub_key_path and os.path.exists(self.pub_key_path):
+            os.unlink(self.pub_key_path)
+
+        if self.priv_key_path and os.path.exists(self.priv_key_path):
+            os.unlink(self.priv_key_path)
 
 
 class EC2(Cloud):
@@ -338,6 +351,7 @@ class EC2(Cloud):
                 stream.write(keypair["KeyMaterial"])
             os.chmod(private_key_path, 0o600)
 
+        self.priv_key_path = private_key_path
         self.api.use_key(private_key_path, private_key_path, self.key_name)
 
     def _create_instance(
@@ -494,6 +508,9 @@ class Azure(Cloud):
 
             os.chmod(pub_key_path, 0o600)
             os.chmod(private_key_path, 0o600)
+
+        self.pub_key_path = pub_key_path
+        self.priv_key_path = private_key_path
 
         self.api.use_key(pub_key_path, private_key_path, self.key_name)
 

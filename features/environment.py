@@ -645,26 +645,30 @@ def build_debs_from_dev_instance(context: Context, series: str) -> "List[str]":
             "ubuntu-behave-image-pre-build-%s-" % series + time_suffix
         )
 
-        cloud_manager = context.config.cloud_manager
+        package_cloud_manager = cloud.LXDContainer(
+            machine_type="lxd.container"
+        )
+        package_cloud_manager.manage_ssh_key(key_name="package-build")
         if "pro" in context.config.machine_type:
             user_data = USERDATA_BLOCK_AUTO_ATTACH_IMG
         else:
             user_data = ""
-        inst = cloud_manager.launch(
+
+        inst = package_cloud_manager.launch(
             instance_name=build_container_name,
             series=series,
             user_data=user_data,
         )
 
-        build_container_name = cloud_manager.get_instance_id(inst)
-
+        build_container_name = package_cloud_manager.get_instance_id(inst)
         with emit_spinner_on_travis("Building debs from local source... "):
             deb_paths = build_debs(
                 build_container_name,
                 output_deb_dir=os.path.join(tempfile.gettempdir(), series),
-                cloud_api=context.config.cloud_api,
+                cloud_api=package_cloud_manager.api,
                 cache_source=context.config.cache_source,
             )
+            package_cloud_manager.delete_ssh_keys()
 
     if "pro" in context.config.machine_type:
         return deb_paths
