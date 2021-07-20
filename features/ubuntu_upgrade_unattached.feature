@@ -28,7 +28,6 @@ Feature: Upgrade between releases when uaclient is unattached
         Then stdout matches regexp:
         """
         SERVICE       AVAILABLE  DESCRIPTION
-        cis           no       +Center for Internet Security Audit Tools
         esm-infra     no       +UA Infra: Extended Security Maintenance \(ESM\)
         """
         When I attach `contract_token` with sudo
