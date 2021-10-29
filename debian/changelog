@@ -1,3 +1,26 @@
+ubuntu-advantage-tools (27.4~22.04.1) jammy; urgency=medium
+
+  * d/tools.postinst:
+    - hardcode python binary and PYTHONPATH
+    - undo unnecessary log file creation
+  * New upstream release 27.4
+    - cc-eal: remove beta flag
+    - cli:
+      + detach won't ask to disable dependent service
+      + implement security-status endpoint
+    - fix:
+      + update return code of the command
+      + check reboot-required.pkgs to reboot
+    - livepatch: allow livepatch and fips-updates at the same time
+    - metering:
+      + update how activity info is parsed
+      + update contract response structure
+      + enable job by default
+    - proxy: no_proxy defaults for link-local IMDS routes
+    - util: cache get_platform_info calls
+
+ -- Lucas Moura <lucas.moura@canonical.com>  Fri, 29 Oct 2021 15:35:57 -0300
+
 ubuntu-advantage-tools (27.3~21.10.1) impish; urgency=medium
 
   * d/tools.postinst:
