@@ -2,7 +2,14 @@ import mock
 import pytest
 
 from uaclient import messages
-from uaclient.api.u.pro.security.fix import (
+from uaclient.api.u.pro.security.fix.common.execute.v1 import (
+    FailedUpgrade,
+    FixExecuteError,
+    FixExecuteResult,
+    UpgradedPackage,
+    _execute_fix,
+)
+from uaclient.api.u.pro.security.fix.common.plan.v1 import (
     ESM_INFRA_POCKET,
     STANDARD_UPDATES_POCKET,
     AptUpgradeData,
@@ -21,13 +28,6 @@ from uaclient.api.u.pro.security.fix import (
     NoOpData,
     PackageCannotBeInstalledData,
     SecurityIssueNotFixedData,
-)
-from uaclient.api.u.pro.security.fix.common.execute.v1 import (
-    FailedUpgrade,
-    FixExecuteError,
-    FixExecuteResult,
-    UpgradedPackage,
-    _execute_fix,
 )
 from uaclient.security import FixStatus
 
