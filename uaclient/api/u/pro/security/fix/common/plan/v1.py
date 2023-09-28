@@ -4,6 +4,14 @@ from collections import defaultdict
 from typing import Any, Dict, List, NamedTuple, Optional, Tuple
 
 from uaclient import apt, exceptions, messages
+from uaclient.api.u.pro.security.fix import (
+    CVE,
+    CVE_OR_USN_REGEX,
+    USN,
+    get_related_usns,
+    group_by_usn_package_status,
+    merge_usn_released_binary_package_versions,
+)
 from uaclient.api.u.pro.status.enabled_services.v1 import _enabled_services
 from uaclient.api.u.pro.status.is_attached.v1 import _is_attached
 from uaclient.config import UAConfig
@@ -16,9 +24,6 @@ from uaclient.data_types import (
     data_list,
 )
 from uaclient.security import (
-    CVE,
-    CVE_OR_USN_REGEX,
-    USN,
     BinaryPackageFix,
     CVEPackageStatus,
     FixStatus,
@@ -26,9 +31,6 @@ from uaclient.security import (
     _check_cve_fixed_by_livepatch,
     get_affected_packages_from_usn,
     get_cve_affected_source_packages_status,
-    get_related_usns,
-    group_by_usn_package_status,
-    merge_usn_released_binary_package_versions,
     query_installed_source_pkg_versions,
 )
 
