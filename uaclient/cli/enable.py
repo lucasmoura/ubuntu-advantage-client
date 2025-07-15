@@ -52,10 +52,18 @@ def _auto_enable_services(
     assume_yes: bool,
     json_output,
 ):
+    interactive_only_print = cli_util.create_interactive_only_print_function(
+        json_output
+    )
     machine_token_file = machine_token.get_machine_token_file(cfg)
     services_to_be_enabled = contract.get_enabled_by_default_services(
         cfg, machine_token_file.entitlements()
     )
+
+    if not services_to_be_enabled:
+        interactive_only_print(messages.NO_SERVICES_TO_AUTO_ENABLE)
+        return
+
     enabled_services = _enabled_services(cfg).enabled_services
     all_dependencies = _dependencies(cfg).services
 
